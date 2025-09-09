@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CricLive - Live Cricket Scores & Updates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1e3c72;
+            border-left: 4px solid #1e3c72;
+            padding-left: 10px;
+        }
+        
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .match-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .match-header {
+            background: #2a5298;
+            color: white;
+            padding: 12px 15px;
+            font-weight: 500;
+        }
+        
+        .match-body {
+            padding: 15px;
+        }
+        
+        .teams {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .team {
+            text-align: center;
+            width: 45%;
+        }
+        
+        .team-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .team-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        
+        .match-status {
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 10px;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .news-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 15px;
+        }
+        
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+        
+        .news-excerpt {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .read-more {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .upcoming-list {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upcoming-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .upcoming-item:last-child {
+            border-bottom: none;
+        }
+        
+        .match-teams {
+            font-weight: 500;
+        }
+        
+        .match-date {
+            color: #666;
+        }
+        
+        footer {
+            background: #1e3c72;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            color: #ccc;
+        }
+        
+        .api-status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .api-status.active {
+            background-color: #e6f7ee;
+            color: #0c622e;
+            border: 1px solid #0c622e;
+        }
+        
+        .api-status.inactive {
+            background-color: #fde8e8;
+            color: #c53030;
+            border: 1px solid #c53030;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 5px;
+            }
+            
+            .matches-grid, .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .teams {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .team {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .upcoming-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .match-date {
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">🏏</span>
+                <span>CricLive</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Live Scores</a></li>
+                    <li><a href="#">Upcoming</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Teams</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Live Matches</h2>
+        <div id="live-matches" class="matches-grid">
+            <div class="loading">Loading live matches...</div>
+        </div>
+
+        <h2 class="section-title">Upcoming Matches</h2>
+        <div id="upcoming-matches" class="upcoming-list">
+            <div class="loading">Loading upcoming matches...</div>
+        </div>
+
+        <h2 class="section-title">Latest News</h2>
+        <div id="news" class="news-grid">
+            <div class="loading">Loading news...</div>
+        </div>
+
+        <h2 class="section-title">API Status</h2>
+        <div id="api-status"></div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About CricLive</h3>
+                <p>Your go-to destination for live cricket scores, news, and updates from around the world.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Live Scores</a></li>
+                    <li><a href="#">Upcoming Matches</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Points Table</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2023 CricLive. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // API Configuration
+        const apiConfigurations = [
+            {
+                id: 'api1',
+                name: "CricAPI 1",
+                baseURL: "https://api.cricapi.com/v1/",
+                apiKey: "a66eb606-2730-4d31-9f7d-0ec5df9ebc0c",
+                requestsToday: 0,
+                maxRequests: 100,
+                priority: 1,
+                active: true
+            },
+            {
+                id: 'api2',
+                name: "CricAPI 2",
+                baseURL: "https://api.cricapi.com/v1/",
+                apiKey: "5f2ba589-3b0d-4f5b-8b0d-9e3a52811e4a",
+                requestsToday: 0,
+                maxRequests: 100,
+                priority: 2,
+                active: true
+            },
+            {
+                id: 'api3',
+                name: "CricAPI 3",
+                baseURL: "https://api.cricapi.com/v1/",
+                apiKey: "0e6a72d5-a9d1-424b-8cff-83d7ece2f698",
+                requestsToday: 0,
+                maxRequests: 100,
+                priority: 3,
+                active: true
+            },
+            {
+                id: 'api4',
+                name: "CricAPI 4",
+                baseURL: "https://api.cricapi.com/v1/",
+                apiKey: "201f4ffb-6ec5-41f7-8524-500a074ef336",
+                requestsToday: 0,
+                maxRequests: 100,
+                priority: 4,
+                active: true
+            }
+        ];
+
+        // Data cache
+        const dataCache = {
+            matches: null,
+            news: null,
+            upcoming: null,
+            lastUpdated: null
+        };
+
+        // DOM Elements
+        const liveMatchesElement = document.getElementById('live-matches');
+        const upcomingMatchesElement = document.getElementById('upcoming-matches');
+        const newsElement = document.getElementById('news');
+        const apiStatusElement = document.getElementById('api-status');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAPITable();
+            loadData();
+            
+            // Set up interval for regular updates
+            setInterval(loadData, 30000); // Update every 30 seconds
+            
+            // Reset API counters at midnight
+            setInterval(resetAPICounters, 24 * 60 * 60 * 1000);
+        });
+
+        // Load data from APIs
+        async function loadData() {
+            try {
+                await loadLiveMatches();
+                await loadUpcomingMatches();
+                await loadNews();
+                dataCache.lastUpdated = new Date();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Load live matches
+        async function loadLiveMatches() {
+            const api = getAvailableAPI();
+            if (!api) {
+                console.error('No available API for live matches');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${api.baseURL}currentMatches?apikey=${api.apiKey}&offset=0`);
+                api.requestsToday++;
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status !== "success") {
+                    throw new Error(`API error: ${data.message}`);
+                }
+                
+                dataCache.matches = data.data;
+                renderLiveMatches(data.data);
+                updateAPITable();
+            } catch (error) {
+                console.error(`Error fetching live matches from ${api.name}:`, error);
+                api.active = false;
+                updateAPITable();
+                // Try next available API
+                await loadLiveMatches();
+            }
+        }
+
+        // Load upcoming matches
+        async function loadUpcomingMatches() {
+            const api = getAvailableAPI();
+            if (!api) {
+                console.error('No available API for upcoming matches');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${api.baseURL}matches?apikey=${api.apiKey}&offset=0`);
+                api.requestsToday++;
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status !== "success") {
+                    throw new Error(`API error: ${data.message}`);
+                }
+                
+                // Filter only upcoming matches
+                const upcoming = data.data.filter(match => match.matchStarted === false);
+                dataCache.upcoming = upcoming;
+                renderUpcomingMatches(upcoming);
+                updateAPITable();
+            } catch (error) {
+                console.error(`Error fetching upcoming matches from ${api.name}:`, error);
+                api.active = false;
+                updateAPITable();
+                // Try next available API
+                await loadUpcomingMatches();
+            }
+        }
+
+        // Load news
+        async function loadNews() {
+            // For news, we'll use a placeholder since the provided APIs are for scores
+            const news = [
+                {
+                    title: "Virat Kohli breaks another record",
+                    excerpt: "Indian captain scores his 70th international century in the match against Australia.",
+                    image: "https://via.placeholder.com/300x180?text=Cricket+News"
+                },
+                {
+                    title: "India vs Pakistan match preview",
+                    excerpt: "Everything you need to know about the upcoming high-voltage clash.",
+                    image: "https://via.placeholder.com/300x180?text=Match+Preview"
+                },
+                {
+                    title: "World Cup schedule announced",
+                    excerpt: "ICC reveals the complete schedule for the 2023 Cricket World Cup.",
+                    image: "https://via.placeholder.com/300x180?text=Tournament"
+                }
+            ];
+            
+            dataCache.news = news;
+            renderNews(news);
+        }
+
+        // Get available API with request quota
+        function getAvailableAPI() {
+            // Sort by priority and then by requests made (to distribute load)
+            const availableAPIs = apiConfigurations
+                .filter(api => api.active && api.requestsToday < api.maxRequests)
+                .sort((a, b) => {
+                    if (a.priority !== b.priority) {
+                        return a.priority - b.priority;
+                    }
+                    return a.requestsToday - b.requestsToday;
+                });
+            
+            return availableAPIs.length > 0 ? availableAPIs[0] : null;
+        }
+
+        // Reset API counters at midnight
+        function resetAPICounters() {
+            const now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                apiConfigurations.forEach(api => {
+                    api.requestsToday = 0;
+                    api.active = true;
+                });
+                updateAPITable();
+            }
+        }
+
+        // Render live matches
+        function renderLiveMatches(matches) {
+            if (!matches || matches.length === 0) {
+                liveMatchesElement.innerHTML = '<div class="loading">No live matches currently</div>';
+                return;
+            }
+
+            liveMatchesElement.innerHTML = matches.map(match => `
+                <div class="match-card">
+                    <div class="match-header">
+                        ${match.series}
+                    </div>
+                    <div class="match-body">
+                        <div class="teams">
+                            <div class="team">
+                                <div class="team-name">${match.teams[0]}</div>
+                                <div class="team-score">${match.score ? match.score[0] : 'Yet to bat'}</div>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team">
+                                <div class="team-name">${match.teams[1]}</div>
+                                <div class="team-score">${match.score ? match.score[1] : 'Yet to bat'}</div>
+                            </div>
+                        </div>
+                        <div class="match-status">
+                            ${match.status}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render upcoming matches
+        function renderUpcomingMatches(matches) {
+            if (!matches || matches.length === 0) {
+                upcomingMatchesElement.innerHTML = '<div class="loading">No upcoming matches scheduled</div>';
+                return;
+            }
+
+            upcomingMatchesElement.innerHTML = matches.map(match => `
+                <div class="upcoming-item">
+                    <div class="match-teams">${match.teams.join(' vs ')}</div>
+                    <div class="match-date">${new Date(match.dateTimeGMT).toLocaleDateString()}, ${new Date(match.dateTimeGMT).toLocaleTimeString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render news
+        function renderNews(newsItems) {
+            if (!newsItems || newsItems.
